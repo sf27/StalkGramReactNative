@@ -1,0 +1,19 @@
+{
+  "name": "AwesomeProject",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start"
+  },
+  "dependencies": {
+    "cheerio": "latest",
+    "react": "15.2.1",
+    "react-native": "0.31.0",
+    "react-native-action-button": "^2.0.1",
+    "react-native-awesome-button": "^1.6.0",
+    "react-native-fs": "^2.0.1-rc.2",
+    "react-native-progress": "^3.0.1",
+    "react-native-vector-icons": "^2.1.0",
+    "request": "latest"
+  }
+}
