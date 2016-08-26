@@ -22,6 +22,7 @@ import ToastAndroid from "./native_modules/ToastAndroid";
 import FileUtils from "./native_modules/FileUtils";
 var Progress = require('react-native-progress');
 var RNFS = require('react-native-fs');
+var cheerio = require('cheerio');
 
 class AwesomeProject extends Component {
     constructor(props) {
@@ -53,38 +54,63 @@ class AwesomeProject extends Component {
     }
 
     setUrl(url) {
-        this.setState({text:url})
+        this.setState({text: url})
+    }
+
+    downloadImage(responseText) {
+        console.log("execute downloadImage");
+        let $ = cheerio.load(responseText);
+        let imageUrl = $('meta')[10].attribs.content;
+        console.log("url: ", imageUrl);
+        this.setUrl(imageUrl);
+
+        const filePath = RNFS.ExternalStorageDirectoryPath + "/" + new Date().getTime() + ".jpg";
+        var uploadProgress = (response) => {
+            var progress = Math.floor((response.bytesWritten / response.contentLength) * 100);
+            console.log('UPLOAD IS ' + progress + '% DONE!');
+            this.showProgress(progress, true);
+        };
+        RNFS.downloadFile({
+            fromUrl: imageUrl,
+            toFile: filePath,
+            progress: uploadProgress
+        }).promise.then((dwResult) => {
+            this.showProgress(0);
+            this.setFilePath(filePath);
+            ToastAndroid.show('Download file correctly', ToastAndroid.SHORT);
+            return true
+        }).catch((err) => {
+            this.showProgress(0);
+            this.setFilePath('');
+            console.warn(err);
+            return false
+        });
+    }
+
+    fetchHtml(url) {
+        console.log("fetchHtml");
+        return fetch(url)
+            // .then((response) => response.text())
+            .then((response) => {
+                console.log("responseText");
+                return response.text()
+            })
+            .then((responseText) => {
+                console.log("call downloadImage: ");
+                this.downloadImage(responseText);
+                return responseText;
+            })
+            .catch((error) => {
+                console.warn(error);
+            });
     }
 
     downloadFile() {
+        console.log("Downloading file");
         var that = this;
         Clipboard.getString().then(function (url) {
-            console.log(url);
-            that.setUrl(url);
-            const URL = 'http://www.gettyimages.pt/gi-resources/images/Homepage/Hero/PT/Hero_585031304.jpg';
-
-            const filePath = RNFS.ExternalStorageDirectoryPath + "/" + new Date().getTime() + ".jpg";
-            var uploadProgress = (response) => {
-                var progress = Math.floor((response.bytesWritten / response.contentLength) * 100);
-                console.log('UPLOAD IS ' + progress + '% DONE!');
-                that.showProgress(progress, true);
-            };
-
-            RNFS.downloadFile({
-                fromUrl: URL,
-                toFile: filePath,
-                progress: uploadProgress
-            }).promise.then((dwResult) => {
-                that.showProgress(0);
-                that.setFilePath(filePath);
-                ToastAndroid.show('Download file correctly', ToastAndroid.SHORT);
-                return true
-            }).catch((err) => {
-                that.showProgress(0);
-                that.setFilePath('');
-                console.warn(err);
-                return false
-            });
+            console.log("url: ", url);
+            that.fetchHtml(url);
         });
     }
 
@@ -139,19 +165,19 @@ class AwesomeProject extends Component {
                     style={styles.progress}
                 >
                     {this.state.progressVisible &&
-                        <Progress.Circle
-                            showsText={true}
-                            progress={this.state.progress}
-                            size={300}
-                        />
+                    <Progress.Circle
+                        showsText={true}
+                        progress={this.state.progress}
+                        size={300}
+                    />
                     }
                 </View>
 
                 {!this.state.progressVisible &&
-                    <Image
-                        style={styles.image}
-                        source={{uri:  this.state.filePath ? 'file://' + this.state.filePath : 'http://facebook.github.io/react/img/logo_og.png'}}
-                    />
+                <Image
+                    style={styles.image}
+                    source={{uri: this.state.filePath ? 'file://' + this.state.filePath : 'http://facebook.github.io/react/img/logo_og.png'}}
+                />
                 }
 
                 <ActionButton
