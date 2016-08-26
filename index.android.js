@@ -52,10 +52,15 @@ class AwesomeProject extends Component {
         this.setState({filePath})
     }
 
+    setUrl(url) {
+        this.setState({text:url})
+    }
+
     downloadFile() {
         var that = this;
         Clipboard.getString().then(function (url) {
             console.log(url);
+            that.setUrl(url);
             const URL = 'http://www.gettyimages.pt/gi-resources/images/Homepage/Hero/PT/Hero_585031304.jpg';
 
             const filePath = RNFS.ExternalStorageDirectoryPath + "/" + new Date().getTime() + ".jpg";
@@ -72,8 +77,6 @@ class AwesomeProject extends Component {
             }).promise.then((dwResult) => {
                 that.showProgress(0);
                 that.setFilePath(filePath);
-                console.log(dwResult.jobId + 'jobid');
-                console.log('filePath', filePath);
                 ToastAndroid.show('Download file correctly', ToastAndroid.SHORT);
                 return true
             }).catch((err) => {
@@ -102,19 +105,14 @@ class AwesomeProject extends Component {
                 <TextInput
                     placeholder="Paste here the link"
                     style={styles.textInput}
+                    value={this.state.text}
                 />
                 <View
                     style={styles.mediaContainer}
                 >
                     <AwesomeButton
                         labelStyle={{color: 'white'}}
-                        backgroundStyle={{
-                            flex: 1,
-                            height: 40,
-                            borderRadius: 5,
-                            marginLeft: 10,
-                            marginRight: 5,
-                        }}
+                        backgroundStyle={styles.buttons}
                         transitionDuration={200}
                         states={{
                             idle: {
@@ -126,13 +124,7 @@ class AwesomeProject extends Component {
                     />
                     <AwesomeButton
                         labelStyle={{color: 'white'}}
-                        backgroundStyle={{
-                            flex: 1,
-                            height: 40,
-                            borderRadius: 5,
-                            marginLeft: 5,
-                            marginRight: 10,
-                        }}
+                        backgroundStyle={styles.buttons}
                         transitionDuration={200}
                         states={{
                             idle: {
@@ -144,20 +136,23 @@ class AwesomeProject extends Component {
                     />
                 </View>
                 <View
-                    style={{
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    }}
+                    style={styles.progress}
                 >
                     {this.state.progressVisible &&
-                    <Progress.Bar progress={this.state.progress} height={50} width={200}/>
+                        <Progress.Circle
+                            showsText={true}
+                            progress={this.state.progress}
+                            size={300}
+                        />
                     }
                 </View>
 
-                <Image
-                    style={styles.image}
-                    source={{uri: 'file://' + this.state.filePath}}
-                />
+                {!this.state.progressVisible &&
+                    <Image
+                        style={styles.image}
+                        source={{uri:  this.state.filePath ? 'file://' + this.state.filePath : 'http://facebook.github.io/react/img/logo_og.png'}}
+                    />
+                }
 
                 <ActionButton
                     buttonColor="#00bcd4"
@@ -201,6 +196,17 @@ const styles = StyleSheet.create({
         flex: 10,
         margin: 20,
         borderRadius: 7
+    },
+    progress: {
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    buttons: {
+        flex: 1,
+        height: 40,
+        borderRadius: 5,
+        marginLeft: 10,
+        marginRight: 10,
     }
 });
 
