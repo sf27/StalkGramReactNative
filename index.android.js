@@ -36,12 +36,10 @@ class AwesomeProject extends Component {
     }
 
     share() {
-        console.log('share');
         FileUtils.shareFile(this.state.filePath);
     }
 
     setAs() {
-        console.log('setAs');
         FileUtils.setImageAs(this.state.filePath);
     }
 
@@ -58,16 +56,13 @@ class AwesomeProject extends Component {
     }
 
     downloadImage(responseText) {
-        console.log("execute downloadImage");
         let $ = cheerio.load(responseText);
         let imageUrl = $('meta')[10].attribs.content;
-        console.log("url: ", imageUrl);
         this.setUrl(imageUrl);
 
         const filePath = RNFS.ExternalStorageDirectoryPath + "/" + new Date().getTime() + ".jpg";
         var uploadProgress = (response) => {
             var progress = Math.floor((response.bytesWritten / response.contentLength) * 100);
-            console.log('UPLOAD IS ' + progress + '% DONE!');
             this.showProgress(progress, true);
         };
         RNFS.downloadFile({
@@ -88,17 +83,12 @@ class AwesomeProject extends Component {
     }
 
     fetchHtml(url) {
-        console.log("fetchHtml");
         return fetch(url)
-            // .then((response) => response.text())
             .then((response) => {
-                console.log("responseText");
                 return response.text()
             })
             .then((responseText) => {
-                console.log("call downloadImage: ");
-                this.downloadImage(responseText);
-                return responseText;
+                return this.downloadImage(responseText);
             })
             .catch((error) => {
                 console.warn(error);
@@ -106,10 +96,8 @@ class AwesomeProject extends Component {
     }
 
     downloadFile() {
-        console.log("Downloading file");
         var that = this;
         Clipboard.getString().then(function (url) {
-            console.log("url: ", url);
             that.fetchHtml(url);
         });
     }
