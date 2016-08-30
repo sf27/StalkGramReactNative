@@ -1,5 +1,5 @@
 /**
- * Sample React Native App
+ * Stalkgram React Native App
  * https://github.com/facebook/react-native
  * @flow
  */
@@ -24,14 +24,15 @@ var Progress = require('react-native-progress');
 var RNFS = require('react-native-fs');
 var cheerio = require('cheerio');
 
-class AwesomeProject extends Component {
+class StalkgramProject extends Component {
     constructor(props) {
         super(props);
         this.state = {
             text: '',
             progress: 0,
             progressVisible: false,
-            filePath: ''
+            filePath: '',
+            defaultUrlImage: 'http://facebook.github.io/react/img/logo_og.png'
         };
     }
 
@@ -55,9 +56,16 @@ class AwesomeProject extends Component {
         this.setState({text: url})
     }
 
-    downloadImage(responseText) {
+    getParseUrl(responseText) {
+        /*
+         Function used to get the url from the html response
+         */
         let $ = cheerio.load(responseText);
-        let imageUrl = $('meta')[10].attribs.content;
+        return $('meta')[10].attribs.content;
+    }
+
+    downloadImage(responseText) {
+        let imageUrl = this.getParseUrl(responseText);
         this.setUrl(imageUrl);
 
         const filePath = RNFS.ExternalStorageDirectoryPath + "/" + new Date().getTime() + ".jpg";
@@ -65,41 +73,50 @@ class AwesomeProject extends Component {
             var progress = Math.floor((response.bytesWritten / response.contentLength) * 100);
             this.showProgress(progress, true);
         };
-        RNFS.downloadFile({
+
+        let config = {
             fromUrl: imageUrl,
             toFile: filePath,
             progress: uploadProgress
-        }).promise.then((dwResult) => {
+        };
+
+        let successFn = (result) => {
             this.showProgress(0);
             this.setFilePath(filePath);
             ToastAndroid.show('Download file correctly', ToastAndroid.SHORT);
             return true
-        }).catch((err) => {
+        };
+
+        let errorFn = (err) => {
             this.showProgress(0);
             this.setFilePath('');
             console.warn(err);
             return false
-        });
+        };
+
+        RNFS.downloadFile(config).promise.then(successFn).catch(errorFn);
     }
 
     fetchHtml(url) {
-        return fetch(url)
-            .then((response) => {
-                return response.text()
-            })
-            .then((responseText) => {
-                return this.downloadImage(responseText);
-            })
-            .catch((error) => {
-                console.warn(error);
-            });
+        let successResponseTextFn = (response) => {
+            return response.text()
+        };
+        let successResponseFn = (responseText) => {
+            return this.downloadImage(responseText);
+        };
+        let errorFn = (error) => {
+            console.warn(error);
+        };
+
+        return fetch(url).then(successResponseTextFn).then(successResponseFn).catch(errorFn);
     }
 
     downloadFile() {
-        var that = this;
-        Clipboard.getString().then(function (url) {
-            that.fetchHtml(url);
-        });
+        let success = function (url) {
+            this.fetchHtml(url);
+        }.bind(this);
+
+        Clipboard.getString().then(success);
     }
 
     render() {
@@ -125,7 +142,7 @@ class AwesomeProject extends Component {
                     style={styles.mediaContainer}
                 >
                     <AwesomeButton
-                        labelStyle={{color: 'white'}}
+                        labelStyle={styles.whiteTitle}
                         backgroundStyle={styles.buttons}
                         transitionDuration={200}
                         states={{
@@ -137,7 +154,7 @@ class AwesomeProject extends Component {
                         }}
                     />
                     <AwesomeButton
-                        labelStyle={{color: 'white'}}
+                        labelStyle={styles.whiteTitle}
                         backgroundStyle={styles.buttons}
                         transitionDuration={200}
                         states={{
@@ -164,12 +181,12 @@ class AwesomeProject extends Component {
                 {!this.state.progressVisible &&
                 <Image
                     style={styles.image}
-                    source={{uri: this.state.filePath ? 'file://' + this.state.filePath : 'http://facebook.github.io/react/img/logo_og.png'}}
+                    source={{uri: this.state.filePath ? 'file://' + this.state.filePath : this.state.defaultUrlImage}}
                 />
                 }
 
                 <ActionButton
-                    buttonColor="#00bcd4"
+                    buttonColor='#00bcd4'
                     onPress={this.downloadFile.bind(this)}
                 />
             </View>
@@ -178,6 +195,9 @@ class AwesomeProject extends Component {
 }
 
 const styles = StyleSheet.create({
+    whiteTitle: {
+        color: 'white'
+    },
     bar: {
         flex: 1,
         alignItems: 'center',
@@ -224,4 +244,4 @@ const styles = StyleSheet.create({
     }
 });
 
-AppRegistry.registerComponent('AwesomeProject', () => AwesomeProject);
+AppRegistry.registerComponent('AwesomeProject', () => StalkgramProject);
