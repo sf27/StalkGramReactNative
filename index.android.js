@@ -244,4 +244,4 @@ const styles = StyleSheet.create({
     }
 });
 
-AppRegistry.registerComponent('AwesomeProject', () => StalkgramProject);
+AppRegistry.registerComponent('StalkgramProject', () => StalkgramProject);
