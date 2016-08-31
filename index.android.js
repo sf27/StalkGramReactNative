@@ -10,10 +10,8 @@ import {
     StyleSheet,
     Text,
     TextInput,
-    ToolbarAndroid,
     View,
     Image,
-    StatusBar,
     Clipboard
 } from "react-native";
 import ActionButton from "react-native-action-button";
@@ -28,7 +26,7 @@ class StalkgramProject extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            text: '',
+            url: '',
             progress: 0,
             progressVisible: false,
             filePath: '',
@@ -36,32 +34,23 @@ class StalkgramProject extends Component {
         };
     }
 
-    share() {
-        FileUtils.shareFile(this.state.filePath);
-    }
+    share = () => FileUtils.shareFile(this.state.filePath);
 
-    setAs() {
-        FileUtils.setImageAs(this.state.filePath);
-    }
+    setAs = () => FileUtils.setImageAs(this.state.filePath);
 
-    showProgress(progress, progressVisible = false) {
-        this.setState({progress, progressVisible: progressVisible})
-    }
+    showProgress = (progress, progressVisible = false) => this.setState({progress, progressVisible});
 
-    setFilePath(filePath) {
-        this.setState({filePath})
-    }
+    setFilePath = filePath => this.setState({filePath});
 
-    setUrl(url) {
-        this.setState({text: url})
-    }
+    setUrl = url => this.setState({url});
 
     getParseUrl(responseText) {
         /*
          Function used to get the url from the html response
          */
+        let imageUrlIndex = 10;
         let $ = cheerio.load(responseText);
-        return $('meta')[10].attribs.content;
+        return $('meta')[imageUrlIndex].attribs.content;
     }
 
     downloadImage(responseText) {
@@ -80,14 +69,14 @@ class StalkgramProject extends Component {
             progress: uploadProgress
         };
 
-        let successFn = (result) => {
+        let successFn = result => {
             this.showProgress(0);
             this.setFilePath(filePath);
             ToastAndroid.show('Download file correctly', ToastAndroid.SHORT);
             return true
         };
 
-        let errorFn = (err) => {
+        let errorFn = err => {
             this.showProgress(0);
             this.setFilePath('');
             console.warn(err);
@@ -98,24 +87,15 @@ class StalkgramProject extends Component {
     }
 
     fetchHtml(url) {
-        let successResponseTextFn = (response) => {
-            return response.text()
-        };
-        let successResponseFn = (responseText) => {
-            return this.downloadImage(responseText);
-        };
-        let errorFn = (error) => {
-            console.warn(error);
-        };
+        let successResponseTextFn = response => response.text();
+        let successResponseFn = responseText => this.downloadImage(responseText);
+        let errorFn = error => console.warn(error);
 
         return fetch(url).then(successResponseTextFn).then(successResponseFn).catch(errorFn);
     }
 
     downloadFile() {
-        let success = function (url) {
-            this.fetchHtml(url);
-        }.bind(this);
-
+        let success = url => this.fetchHtml(url);
         Clipboard.getString().then(success);
     }
 
@@ -136,7 +116,7 @@ class StalkgramProject extends Component {
                 <TextInput
                     placeholder="Paste here the link"
                     style={styles.textInput}
-                    value={this.state.text}
+                    value={this.state.url}
                 />
                 <View
                     style={styles.mediaContainer}
