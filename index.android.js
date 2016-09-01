@@ -25,7 +25,7 @@ class StalkgramProject extends Component {
             filePath: '',
             isImage: true,
             isVideo: false,
-            defaultUrlImage: 'http://facebook.github.io/react/img/logo_og.png'
+            defaultUrlImage: require('./app/images/logo_og.png')
         };
     }
 
@@ -121,7 +121,7 @@ class StalkgramProject extends Component {
         if (this.state.isImage) {
             mediaComponent = <Image
                 style={styles.mediaContainer}
-                source={{uri: this.state.filePath ? 'file://' + this.state.filePath : this.state.defaultUrlImage}}
+                source={this.state.filePath ? {uri: 'file://' + this.state.filePath} : this.state.defaultUrlImage}
             />;
         } else {
             mediaComponent = <VideoPlayer
@@ -234,9 +234,11 @@ const styles = StyleSheet.create({
         padding: 10
     },
     mediaContainer: {
-        flex: 10,
+        flex: 8,
         margin: 20,
-        borderRadius: 7
+        borderRadius: 7,
+        width: null,
+        height: null,
     },
     progress: {
         alignItems: 'center',
