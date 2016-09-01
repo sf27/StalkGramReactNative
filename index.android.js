@@ -29,9 +29,9 @@ class StalkgramProject extends Component {
         };
     }
 
-    share = () => FileUtils.shareFile(this.state.filePath);
+    onShare = () => FileUtils.shareFile(this.state.filePath);
 
-    setAs = () => FileUtils.setImageAs(this.state.filePath);
+    onSetAs = () => FileUtils.setImageAs(this.state.filePath);
 
     showProgress = (progress, progressVisible = false) => this.setState({progress, progressVisible});
 
@@ -61,16 +61,20 @@ class StalkgramProject extends Component {
         return imageUrl;
     }
 
-    downloadMedia(responseText) {
-        let mediaUrl = this.getParseUrl(responseText);
-
-        let unix_time = new Date().getTime();
+    getFilePath(){
         let filePath;
+        let unix_time = new Date().getTime();
         if (this.state.isImage) {
             filePath = `${RNFS.ExternalStorageDirectoryPath}/${unix_time}.jpg`;
         } else {
             filePath = `${RNFS.ExternalStorageDirectoryPath}/${unix_time}.mp4`;
         }
+        return filePath;
+    }
+
+    downloadMedia(responseText) {
+        let mediaUrl = this.getParseUrl(responseText);
+        let filePath = this.getFilePath();
 
         var uploadProgress = (response) => {
             var progress = Math.floor((response.bytesWritten / response.contentLength) * 100);
@@ -108,13 +112,13 @@ class StalkgramProject extends Component {
         return fetch(url).then(successResponseTextFn).then(successResponseFn).catch(errorFn);
     }
 
-    downloadFile() {
+    onDownloadFile = () => {
         let success = url => {
             this.setUrl(url);
             this.fetchHtml(url);
         };
         Clipboard.getString().then(success);
-    }
+    };
 
     render() {
         var mediaComponent;
@@ -158,7 +162,7 @@ class StalkgramProject extends Component {
                         states={{
                             idle: {
                                 text: 'Set as',
-                                onPress: this.setAs.bind(this),
+                                onPress: this.onSetAs,
                                 backgroundColor: '#00bcd4',
                             }
                         }}
@@ -170,7 +174,7 @@ class StalkgramProject extends Component {
                         states={{
                             idle: {
                                 text: 'Share',
-                                onPress: this.share.bind(this),
+                                onPress: this.onShare,
                                 backgroundColor: '#00bcd4',
                             }
                         }}
@@ -194,7 +198,7 @@ class StalkgramProject extends Component {
 
                 <ActionButton
                     buttonColor='#00bcd4'
-                    onPress={this.downloadFile.bind(this)}
+                    onPress={this.onDownloadFile}
                 />
             </View>
         );
