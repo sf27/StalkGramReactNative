@@ -43,10 +43,11 @@ class StalkgramProject extends Component {
         /*
          Function used to get the url from the html response
          */
+        const INDEX_IMAGE = 10;
+        const INDEX_VIDEO = 23;
         let $ = cheerio.load(responseText);
-        // todo: Fix the problem to detect if the media file is a video or a image
         let metaList = $('meta');
-        let metaVideoUrl = metaList[23];
+        let metaVideoUrl = metaList[INDEX_VIDEO];
         if (metaVideoUrl) {
             let videoUrl = metaVideoUrl.attribs.content;
             if (videoUrl.toString().indexOf("http://") != -1) {
@@ -55,7 +56,7 @@ class StalkgramProject extends Component {
             }
         }
 
-        let imageUrl = metaList[10].attribs.content;
+        let imageUrl = metaList[INDEX_IMAGE].attribs.content;
         this.setState({isImage: true, isVideo: false});
         return imageUrl;
     }
