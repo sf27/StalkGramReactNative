@@ -19,6 +19,8 @@ import com.facebook.react.modules.network.OkHttpClientProvider;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import java.util.concurrent.TimeUnit;
 
+import com.brentvatne.react.ReactVideoPackage;
+
 public class MainApplication extends Application implements ReactApplication {
 
     private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
@@ -32,6 +34,7 @@ public class MainApplication extends Application implements ReactApplication {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
                     new RNFSPackage(),
+                    new ReactVideoPackage(),
                     new StalkgramReactPackage()
             );
         }

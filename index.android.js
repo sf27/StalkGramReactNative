@@ -5,22 +5,15 @@
  */
 
 import React, {Component} from "react";
-import {
-    AppRegistry,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
-    Image,
-    Clipboard
-} from "react-native";
+import {AppRegistry, StyleSheet, Text, TextInput, View, Image, Clipboard} from "react-native";
 import ActionButton from "react-native-action-button";
 import AwesomeButton from "react-native-awesome-button";
-import ToastAndroid from "./native_modules/ToastAndroid";
-import FileUtils from "./native_modules/FileUtils";
-var Progress = require('react-native-progress');
-var RNFS = require('react-native-fs');
-var cheerio = require('cheerio');
+import ToastAndroid from "./app/native_modules/ToastAndroid";
+import FileUtils from "./app/native_modules/FileUtils";
+import {VideoPlayer} from "./app/components/videoPlayer";
+import {Circle} from "react-native-progress";
+import RNFS from "react-native-fs";
+import cheerio from "cheerio";
 
 class StalkgramProject extends Component {
     constructor(props) {
@@ -30,6 +23,8 @@ class StalkgramProject extends Component {
             progress: 0,
             progressVisible: false,
             filePath: '',
+            isImage: true,
+            isVideo: false,
             defaultUrlImage: 'http://facebook.github.io/react/img/logo_og.png'
         };
     }
@@ -49,22 +44,37 @@ class StalkgramProject extends Component {
          Function used to get the url from the html response
          */
         let imageUrlIndex = 10;
+        let videoUrlIndex = 23;
         let $ = cheerio.load(responseText);
-        return $('meta')[imageUrlIndex].attribs.content;
+        let metaList = $('meta');
+        let videoUrl = metaList[videoUrlIndex].attribs.content;
+        if (videoUrl.toString().indexOf("http://") != -1) {
+            this.setState({isImage: false, isVideo: true});
+            return videoUrl
+        }
+        let imageUrl = metaList[imageUrlIndex].attribs.content;
+        this.setState({isImage: true, isVideo: false});
+        return imageUrl;
     }
 
-    downloadImage(responseText) {
-        let imageUrl = this.getParseUrl(responseText);
-        this.setUrl(imageUrl);
+    downloadMedia(responseText) {
+        let mediaUrl = this.getParseUrl(responseText);
 
-        const filePath = RNFS.ExternalStorageDirectoryPath + "/" + new Date().getTime() + ".jpg";
+        let unix_time = new Date().getTime();
+        let filePath;
+        if (this.state.isImage) {
+            filePath = `${RNFS.ExternalStorageDirectoryPath}/${unix_time}.jpg`;
+        } else {
+            filePath = `${RNFS.ExternalStorageDirectoryPath}/${unix_time}.mp4`;
+        }
+
         var uploadProgress = (response) => {
             var progress = Math.floor((response.bytesWritten / response.contentLength) * 100);
-            this.showProgress(progress, true);
+            this.showProgress(progress, progressVisible = true);
         };
 
         let config = {
-            fromUrl: imageUrl,
+            fromUrl: mediaUrl,
             toFile: filePath,
             progress: uploadProgress
         };
@@ -88,18 +98,34 @@ class StalkgramProject extends Component {
 
     fetchHtml(url) {
         let successResponseTextFn = response => response.text();
-        let successResponseFn = responseText => this.downloadImage(responseText);
+        let successResponseFn = responseText => this.downloadMedia(responseText);
         let errorFn = error => console.warn(error);
 
         return fetch(url).then(successResponseTextFn).then(successResponseFn).catch(errorFn);
     }
 
     downloadFile() {
-        let success = url => this.fetchHtml(url);
+        let success = url => {
+            this.setUrl(url);
+            this.fetchHtml(url);
+        };
         Clipboard.getString().then(success);
     }
 
     render() {
+        var mediaComponent;
+        if (this.state.isImage) {
+            mediaComponent = <Image
+                style={styles.mediaContainer}
+                source={{uri: this.state.filePath ? 'file://' + this.state.filePath : this.state.defaultUrlImage}}
+            />;
+        } else {
+            mediaComponent = <VideoPlayer
+                style={styles.mediaContainer}
+                uri={'file://' + this.state.filePath}
+            />;
+        }
+
         return (
             <View style={{flex: 1, flexDirection: 'column'}}>
                 <View
@@ -119,7 +145,7 @@ class StalkgramProject extends Component {
                     value={this.state.url}
                 />
                 <View
-                    style={styles.mediaContainer}
+                    style={styles.buttonsContainer}
                 >
                     <AwesomeButton
                         labelStyle={styles.whiteTitle}
@@ -150,7 +176,7 @@ class StalkgramProject extends Component {
                     style={styles.progress}
                 >
                     {this.state.progressVisible &&
-                    <Progress.Circle
+                    <Circle
                         showsText={true}
                         progress={this.state.progress}
                         size={300}
@@ -159,10 +185,7 @@ class StalkgramProject extends Component {
                 </View>
 
                 {!this.state.progressVisible &&
-                <Image
-                    style={styles.image}
-                    source={{uri: this.state.filePath ? 'file://' + this.state.filePath : this.state.defaultUrlImage}}
-                />
+                mediaComponent
                 }
 
                 <ActionButton
@@ -201,12 +224,12 @@ const styles = StyleSheet.create({
         borderRadius: 7,
         color: '#00bcd4'
     },
-    mediaContainer: {
+    buttonsContainer: {
         flex: 2,
         flexDirection: 'row',
         padding: 10
     },
-    image: {
+    mediaContainer: {
         flex: 10,
         margin: 20,
         borderRadius: 7
