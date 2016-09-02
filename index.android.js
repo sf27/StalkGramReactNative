@@ -8,129 +8,32 @@ import React, {Component} from "react";
 import {AppRegistry, StyleSheet, Text, TextInput, View, Image, Clipboard} from "react-native";
 import ActionButton from "react-native-action-button";
 import AwesomeButton from "react-native-awesome-button";
-import ToastAndroid from "./app/native_modules/ToastAndroid";
-import FileUtils from "./app/native_modules/FileUtils";
 import {VideoPlayer} from "./app/components/videoPlayer";
+import {MainView} from "./app/MainView";
 import {Circle} from "react-native-progress";
-import RNFS from "react-native-fs";
-import cheerio from "cheerio";
 
-class StalkgramProject extends Component {
+class MainComponent extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            url: '',
-            progress: 0,
-            progressVisible: false,
-            filePath: '',
-            isImage: true,
-            isVideo: false,
-            defaultUrlImage: require('./app/images/logo_og.png')
-        };
+        this.mainView = new MainView(this);
+        this.mainView.initialize();
     }
 
-    onShare = () => FileUtils.shareFile(this.state.filePath);
-
-    onSetAs = () => FileUtils.setImageAs(this.state.filePath);
-
-    showProgress = (progress, progressVisible = false) => this.setState({progress, progressVisible});
-
-    setFilePath = filePath => this.setState({filePath});
-
-    setUrl = url => this.setState({url});
-
-    getParseUrl(responseText) {
-        /*
-         Function used to get the url from the html response
-         */
-        const INDEX_IMAGE = 10;
-        const INDEX_VIDEO = 23;
-        let $ = cheerio.load(responseText);
-        let metaList = $('meta');
-        let metaVideoUrl = metaList[INDEX_VIDEO];
-        if (metaVideoUrl) {
-            let videoUrl = metaVideoUrl.attribs.content;
-            if (videoUrl.toString().indexOf("http://") != -1) {
-                this.setState({isImage: false, isVideo: true});
-                return videoUrl
-            }
-        }
-
-        let imageUrl = metaList[INDEX_IMAGE].attribs.content;
-        this.setState({isImage: true, isVideo: false});
-        return imageUrl;
-    }
-
-    getFilePath(){
-        let filePath;
-        let unix_time = new Date().getTime();
-        if (this.state.isImage) {
-            filePath = `${RNFS.ExternalStorageDirectoryPath}/${unix_time}.jpg`;
-        } else {
-            filePath = `${RNFS.ExternalStorageDirectoryPath}/${unix_time}.mp4`;
-        }
-        return filePath;
-    }
-
-    downloadMedia(responseText) {
-        let mediaUrl = this.getParseUrl(responseText);
-        let filePath = this.getFilePath();
-
-        var uploadProgress = (response) => {
-            var progress = Math.floor((response.bytesWritten / response.contentLength) * 100);
-            this.showProgress(progress, progressVisible = true);
-        };
-
-        let config = {
-            fromUrl: mediaUrl,
-            toFile: filePath,
-            progress: uploadProgress
-        };
-
-        let successFn = result => {
-            this.showProgress(0);
-            this.setFilePath(filePath);
-            ToastAndroid.show('Download file correctly', ToastAndroid.SHORT);
-            return true
-        };
-
-        let errorFn = err => {
-            this.showProgress(0);
-            this.setFilePath('');
-            console.warn(err);
-            return false
-        };
-
-        RNFS.downloadFile(config).promise.then(successFn).catch(errorFn);
-    }
-
-    fetchHtml(url) {
-        let successResponseTextFn = response => response.text();
-        let successResponseFn = responseText => this.downloadMedia(responseText);
-        let errorFn = error => console.warn(error);
-
-        return fetch(url).then(successResponseTextFn).then(successResponseFn).catch(errorFn);
-    }
-
-    onDownloadFile = () => {
-        let success = url => {
-            this.setUrl(url);
-            this.fetchHtml(url);
-        };
-        Clipboard.getString().then(success);
-    };
+    onShare = () => this.mainView.onShare();
+    onSetAs = () => this.mainView.onSetAs();
+    onDownloadFile = () => this.mainView.onDownloadFile();
 
     render() {
         var mediaComponent;
-        if (this.state.isImage) {
+        if (this.mainView.isImage()) {
             mediaComponent = <Image
                 style={styles.mediaContainer}
-                source={this.state.filePath ? {uri: 'file://' + this.state.filePath} : this.state.defaultUrlImage}
+                source={this.mainView.getFilePath()}
             />;
         } else {
             mediaComponent = <VideoPlayer
                 style={styles.mediaContainer}
-                uri={'file://' + this.state.filePath}
+                uri={this.mainView.getFilePath()}
             />;
         }
 
@@ -150,7 +53,7 @@ class StalkgramProject extends Component {
                 <TextInput
                     placeholder="Paste here the link"
                     style={styles.textInput}
-                    value={this.state.url}
+                    value={this.mainView.getUrl()}
                 />
                 <View
                     style={styles.buttonsContainer}
@@ -183,16 +86,16 @@ class StalkgramProject extends Component {
                 <View
                     style={styles.progress}
                 >
-                    {this.state.progressVisible &&
+                    {this.mainView.isProgressVisible() &&
                     <Circle
                         showsText={true}
-                        progress={this.state.progress}
+                        progress={this.mainView.getProgress()}
                         size={300}
                     />
                     }
                 </View>
 
-                {!this.state.progressVisible &&
+                {!this.mainView.isProgressVisible() &&
                 mediaComponent
                 }
 
@@ -257,4 +160,6 @@ const styles = StyleSheet.create({
     }
 });
 
-AppRegistry.registerComponent('StalkgramProject', () => StalkgramProject);
+AppRegistry.registerComponent('StalkgramProject', () => {
+    return MainComponent;
+});
