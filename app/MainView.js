@@ -18,8 +18,7 @@ export class MainView {
             progressVisible: false,
             filePath: '',
             isImage: true,
-            isVideo: false,
-            defaultUrlImage: require('./app/images/logo_og.png')
+            defaultUrlImage: require('./images/logo_og.png')
         };
     }
 

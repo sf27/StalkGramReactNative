@@ -24,13 +24,13 @@ export class MainController {
         if (metaVideoUrl) {
             let videoUrl = metaVideoUrl.attribs.content;
             if (videoUrl.toString().indexOf("http://") != -1) {
-                this.mainView.setComponentState({isImage: false, isVideo: true});
+                this.mainView.setComponentState({isImage: false});
                 return videoUrl
             }
         }
 
         let imageUrl = metaList[INDEX_IMAGE].attribs.content;
-        this.mainView.setComponentState({isImage: true, isVideo: false});
+        this.mainView.setComponentState({isImage: true});
         return imageUrl;
     }
 
