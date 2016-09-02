@@ -160,6 +160,4 @@ const styles = StyleSheet.create({
     }
 });
 
-AppRegistry.registerComponent('StalkgramProject', () => {
-    return MainComponent;
-});
+AppRegistry.registerComponent('MainComponent', () => MainComponent);
