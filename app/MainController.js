@@ -50,7 +50,7 @@ export class MainController {
         let filePath = this.generateFilePath();
 
         var uploadProgress = (response) => {
-            var progress = Math.floor((response.bytesWritten / response.contentLength) * 100);
+            var progress = (response.bytesWritten / response.contentLength);
             this.mainView.setComponentState({progress: progress, progressVisible: true});
         };
 
