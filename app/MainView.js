@@ -8,7 +8,7 @@ import {MainController} from "./MainController";
 export class MainView {
     constructor(component) {
         this.component = component;
-        this.mainView = new MainController(this);
+        this.mainController = new MainController(this);
     }
 
     initialize() {
@@ -18,14 +18,14 @@ export class MainView {
             progressVisible: false,
             filePath: '',
             isImage: true,
-            defaultUrlImage: require('./images/logo_og.png')
+            defaultUrlImage: require('./assets/images/logo_og.png')
         };
     }
 
     onDownloadFile = () => {
         let success = url => {
             this.setComponentState({url: url});
-            this.mainView.fetchHtml(url);
+            this.mainController.fetchHtml(url);
         };
         Clipboard.getString().then(success);
     };

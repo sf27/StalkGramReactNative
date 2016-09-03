@@ -8,8 +8,8 @@ import {Clipboard} from "react-native";
 import ToastAndroid from "./native_modules/ToastAndroid";
 
 export class MainController {
-    constructor(presenter) {
-        this.mainView = presenter;
+    constructor(view) {
+        this.mainController = view;
     }
 
     getParseUrl(responseText) {
@@ -24,20 +24,20 @@ export class MainController {
         if (metaVideoUrl) {
             let videoUrl = metaVideoUrl.attribs.content;
             if (videoUrl.toString().indexOf("http://") != -1) {
-                this.mainView.setComponentState({isImage: false});
+                this.mainController.setComponentState({isImage: false});
                 return videoUrl
             }
         }
 
         let imageUrl = metaList[INDEX_IMAGE].attribs.content;
-        this.mainView.setComponentState({isImage: true});
+        this.mainController.setComponentState({isImage: true});
         return imageUrl;
     }
 
     generateFilePath() {
         let filePath;
         let unix_time = new Date().getTime();
-        if (this.mainView.isImage()) {
+        if (this.mainController.isImage()) {
             filePath = `${RNFS.ExternalStorageDirectoryPath}/${unix_time}.jpg`;
         } else {
             filePath = `${RNFS.ExternalStorageDirectoryPath}/${unix_time}.mp4`;
@@ -51,7 +51,7 @@ export class MainController {
 
         var uploadProgress = (response) => {
             var progress = (response.bytesWritten / response.contentLength);
-            this.mainView.setComponentState({progress: progress, progressVisible: true});
+            this.mainController.setComponentState({progress: progress, progressVisible: true});
         };
 
         let config = {
@@ -61,15 +61,15 @@ export class MainController {
         };
 
         let successFn = result => {
-            this.mainView.setComponentState({progress: 0, progressVisible: false});
-            this.mainView.setComponentState({filePath: filePath});
+            this.mainController.setComponentState({progress: 0, progressVisible: false});
+            this.mainController.setComponentState({filePath: filePath});
             ToastAndroid.show('Download file correctly', ToastAndroid.SHORT);
             return true
         };
 
         let errorFn = err => {
-            this.mainView.setComponentState({progress: 0, progressVisible: false});
-            this.mainView.setComponentState({filePath: ''});
+            this.mainController.setComponentState({progress: 0, progressVisible: false});
+            this.mainController.setComponentState({filePath: ''});
             console.warn(err);
             return false
         };
