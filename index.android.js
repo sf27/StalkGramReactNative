@@ -83,17 +83,21 @@ class MainComponent extends Component {
                         }}
                     />
                 </View>
+
+                {this.mainView.isProgressVisible() &&
                 <View
                     style={styles.progress}
                 >
-                    {this.mainView.isProgressVisible() &&
                     <Circle
                         showsText={true}
                         progress={this.mainView.getProgress()}
-                        size={300}
+                        size={200}
+                        unfilledColor='white'
+                        color='#00bcd4'
                     />
-                    }
                 </View>
+                }
+
 
                 {!this.mainView.isProgressVisible() &&
                 mediaComponent
@@ -113,8 +117,8 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     bar: {
-        flex: 1,
         alignItems: 'center',
+        flex: 1,
         padding: 10,
         paddingTop: 20
     },
@@ -122,18 +126,18 @@ const styles = StyleSheet.create({
         color: '#fff'
     },
     text: {
+        color: '#00bcd4',
         flex: 1,
         marginLeft: 20,
         marginRight: 20,
-        marginTop: 20,
-        color: '#00bcd4'
+        marginTop: 20
     },
     textInput: {
+        borderRadius: 7,
+        color: '#00bcd4',
         flex: 1,
         marginLeft: 20,
-        marginRight: 20,
-        borderRadius: 7,
-        color: '#00bcd4'
+        marginRight: 20
     },
     buttonsContainer: {
         flex: 2,
@@ -141,20 +145,23 @@ const styles = StyleSheet.create({
         padding: 10
     },
     mediaContainer: {
-        flex: 8,
-        margin: 20,
         borderRadius: 7,
-        width: null,
+        flex: 8,
         height: null,
+        margin: 20,
+        width: null,
     },
     progress: {
         alignItems: 'center',
-        justifyContent: 'center'
+        borderRadius: 7,
+        flex: 8,
+        justifyContent: 'center',
+        margin: 20,
     },
     buttons: {
+        borderRadius: 7,
         flex: 1,
-        height: 40,
-        borderRadius: 5,
+        height: 10,
         marginLeft: 10,
         marginRight: 10,
     }

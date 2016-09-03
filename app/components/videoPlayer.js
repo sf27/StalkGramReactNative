@@ -42,7 +42,6 @@ export class VideoPlayer extends Component {
         const flexCompleted = this.getCurrentTimePercentage() * 100;
         const flexRemaining = (1 - this.getCurrentTimePercentage()) * 100;
         var {style, uri} = this.props;
-        console.log("uri: ", uri);
         return (
             <View style={style}>
                 <TouchableOpacity style={styles.fullScreen}
@@ -86,7 +85,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
     },
     fullScreen: {
-        // flex: 1,
         position: 'absolute',
         top: 0,
         left: 0,
