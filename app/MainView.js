@@ -18,7 +18,7 @@ export class MainView {
             progressVisible: false,
             filePath: '',
             isImage: true,
-            defaultUrlImage: require('./assets/images/logo_og.png')
+            defaultUrlImage: require('./assets/images/default-image.png')
         };
     }
 

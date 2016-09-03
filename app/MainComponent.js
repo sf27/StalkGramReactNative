@@ -8,10 +8,10 @@ import React, {Component} from "react";
 import {Text, TextInput, View, Image, Clipboard} from "react-native";
 import ActionButton from "react-native-action-button";
 import AwesomeButton from "react-native-awesome-button";
-import {VideoPlayer} from "./components/videoPlayer";
+import {VideoPlayer} from "./components/VideoPlayer";
 import {MainView} from "./MainView";
 import {Circle} from "react-native-progress";
-import styles from "./assets/styles";
+import styles from "./assets/styles/main-styles";
 
 export class MainComponent extends Component {
     constructor(props) {
