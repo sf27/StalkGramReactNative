@@ -49,12 +49,15 @@ export class MainComponent extends Component {
                 <Text
                     style={styles.text}
                 >
-                    Paste the share link here
+                    Instagram Share URL
                 </Text>
                 <TextInput
-                    placeholder="Paste here the link"
+                    placeholder="Share URL"
                     style={styles.textInput}
                     value={this.mainController.getUrl()}
+                    multiline = {true}
+                    numberOfLines = {2}
+                    editable={false}
                 />
                 <View
                     style={styles.buttonsContainer}

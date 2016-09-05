@@ -31,9 +31,11 @@ const styles = StyleSheet.create({
         marginRight: 20
     },
     buttonsContainer: {
-        flex: 2,
+        flex: 1.2,
         flexDirection: 'row',
-        padding: 10
+        paddingLeft: 10,
+        paddingTop: 10,
+        paddingRight: 10
     },
     mediaContainer: {
         borderRadius: 7,

@@ -26,6 +26,7 @@ export class MainView {
      * On click methods
      */
     onDownloadFile = () => {
+        this.setComponentState({url: ''});
         let success = url => {
             this.setComponentState({url: url});
             this.mainController.fetchHtml(url);
