@@ -14,14 +14,17 @@ export class MainView {
     initialize() {
         this.component.state = {
             url: '',
-            progress: 0,
-            progressVisible: false,
             filePath: '',
+            progress: 0,
+            isProgressVisible: false,
             isImage: true,
             defaultUrlImage: require('./assets/images/default-image.png')
         };
     }
 
+    /**
+     * On click methods
+     */
     onDownloadFile = () => {
         let success = url => {
             this.setComponentState({url: url});
@@ -33,13 +36,14 @@ export class MainView {
     onSetAs = () => FileUtils.setImageAs(this.component.state.filePath);
 
     /**
-     *
-     *
+     * Decorator method used to change the component state
      */
     setComponentState = (state) => this.component.setState(state);
-
+    /**
+     * Methods used to access the component states
+     */
     isImage = () => this.component.state.isImage;
-    isProgressVisible = () => this.component.state.progressVisible;
+    isProgressVisible = () => this.component.state.isProgressVisible;
     getProgress = () => this.component.state.progress;
     getUrl = () => this.component.state.url;
     getFilePath = () => {

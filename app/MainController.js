@@ -36,11 +36,11 @@ export class MainController {
 
     generateFilePath() {
         let filePath;
-        let unix_time = new Date().getTime();
+        let unixTime = new Date().getTime();
         if (this.mainController.isImage()) {
-            filePath = `${RNFS.ExternalStorageDirectoryPath}/${unix_time}.jpg`;
+            filePath = `${RNFS.ExternalStorageDirectoryPath}/${unixTime}.jpg`;
         } else {
-            filePath = `${RNFS.ExternalStorageDirectoryPath}/${unix_time}.mp4`;
+            filePath = `${RNFS.ExternalStorageDirectoryPath}/${unixTime}.mp4`;
         }
         return filePath;
     }
@@ -51,7 +51,7 @@ export class MainController {
 
         var uploadProgress = (response) => {
             var progress = (response.bytesWritten / response.contentLength);
-            this.mainController.setComponentState({progress: progress, progressVisible: true});
+            this.mainController.setComponentState({progress: progress, isProgressVisible: true});
         };
 
         let config = {
@@ -61,14 +61,14 @@ export class MainController {
         };
 
         let successFn = result => {
-            this.mainController.setComponentState({progress: 0, progressVisible: false});
-            this.mainController.setComponentState({filePath: filePath});
+            this.mainController.setComponentState({progress: 0, isProgressVisible: false});
+            this.mainController.setComponentState({filePath});
             ToastAndroid.show('Download file correctly', ToastAndroid.SHORT);
             return true
         };
 
         let errorFn = err => {
-            this.mainController.setComponentState({progress: 0, progressVisible: false});
+            this.mainController.setComponentState({progress: 0, isProgressVisible: false});
             this.mainController.setComponentState({filePath: ''});
             console.warn(err);
             return false
