@@ -37,11 +37,11 @@ export class MainView {
     onSetAs = () => FileUtils.setImageAs(this.component.state.filePath);
 
     /**
-     * Decorator method used to change the component state
+     * Decorator method used to change the component states
      */
     setComponentState = (state) => this.component.setState(state);
     /**
-     * Methods used to access the component states
+     * Decorator Methods used to access the component states
      */
     isImage = () => this.component.state.isImage;
     isProgressVisible = () => this.component.state.isProgressVisible;
