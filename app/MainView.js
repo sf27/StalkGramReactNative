@@ -55,7 +55,6 @@ export class MainView {
      */
     isImage = () => this.component.state.isImage;
     isProgressVisible = () => this.component.state.isProgressVisible;
-    isProgressIndeterminate = () => this.component.state.isProgressIndeterminate;
     getProgress = () => this.component.state.progress;
     getUrl = () => this.component.state.url;
     getFilePath = () => {
