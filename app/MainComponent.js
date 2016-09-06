@@ -18,25 +18,25 @@ export class MainComponent extends Component {
     constructor(props) {
         super(props);
 
-        this.mainController = new MainView(this);
-        this.mainController.initialize();
+        this.mainView = new MainView(this);
+        this.mainView.initialize();
     }
 
-    onShare = () => this.mainController.onShare();
-    onSetAs = () => this.mainController.onSetAs();
-    onDownloadFile = () => this.mainController.onDownloadFile();
+    onShare = () => this.mainView.onShare();
+    onSetAs = () => this.mainView.onSetAs();
+    onDownloadFile = () => this.mainView.onDownloadFile();
 
     render() {
         var mediaComponent;
-        if (this.mainController.isImage()) {
+        if (this.mainView.isImage()) {
             mediaComponent = <Image
                 style={styles.mediaContainer}
-                source={this.mainController.getFilePath()}
+                source={this.mainView.getFilePath()}
             />;
         } else {
             mediaComponent = <VideoPlayer
                 style={styles.mediaContainer}
-                uri={this.mainController.getFilePath()}
+                uri={this.mainView.getFilePath()}
             />;
         }
 
@@ -56,7 +56,7 @@ export class MainComponent extends Component {
                 <TextInput
                     placeholder={I18n.t('title')}
                     style={styles.textInput}
-                    value={this.mainController.getUrl()}
+                    value={this.mainView.getUrl()}
                     multiline={true}
                     numberOfLines={2}
                     editable={false}
@@ -90,13 +90,13 @@ export class MainComponent extends Component {
                     />
                 </View>
 
-                {this.mainController.isProgressVisible() &&
+                {this.mainView.isProgressVisible() &&
                 <View
                     style={styles.progress}
                 >
                     <Circle
                         showsText={true}
-                        progress={this.mainController.getProgress()}
+                        progress={this.mainView.getProgress()}
                         size={200}
                         unfilledColor='white'
                         color='#00bcd4'
@@ -105,7 +105,7 @@ export class MainComponent extends Component {
                 }
 
 
-                {!this.mainController.isProgressVisible() &&
+                {!this.mainView.isProgressVisible() &&
                 mediaComponent
                 }
 

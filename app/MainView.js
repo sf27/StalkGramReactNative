@@ -4,6 +4,7 @@
 import {Clipboard} from "react-native";
 import FileUtils from "./native_modules/FileUtils";
 import {MainController} from "./MainController";
+import ToastAndroid from "./native_modules/ToastAndroid";
 
 export class MainView {
     constructor(component) {
@@ -28,6 +29,11 @@ export class MainView {
     onDownloadFile = () => {
         this.setComponentState({url: ''});
         let success = url => {
+            if (url.toString().indexOf("https://www.instagram.com/") === -1) {
+                this.setComponentState({url: '', filePath: '', isImage: true});
+                ToastAndroid.show('Please paste a valid Instagram URL', ToastAndroid.SHORT);
+                return;
+            }
             this.setComponentState({url: url});
             this.mainController.fetchHtml(url);
         };
