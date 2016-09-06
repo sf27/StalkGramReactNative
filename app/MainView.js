@@ -35,7 +35,6 @@ export class MainView {
         this.setComponentState(this._getDefaultStates());
         let success = url => {
             if (url.toString().indexOf("https://www.instagram.com/") === -1) {
-                this.setComponentState({url: '', filePath: '', isImage: true});
                 ToastAndroid.show(I18n.t('errorInvalidUrl'), ToastAndroid.SHORT);
                 return;
             }

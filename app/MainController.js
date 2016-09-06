@@ -61,15 +61,13 @@ export class MainController {
         };
 
         let successFn = result => {
-            this.mainView.setComponentState({progress: 0, isProgressVisible: false});
-            this.mainView.setComponentState({filePath});
+            this.mainView.setComponentState({progress: 0, isProgressVisible: false, filePath});
             ToastAndroid.show(I18n.t('successDownload'), ToastAndroid.SHORT);
             return true
         };
 
         let errorFn = err => {
-            this.mainView.setComponentState({progress: 0, isProgressVisible: false});
-            this.mainView.setComponentState({filePath: ''});
+            this.mainView.setComponentState({progress: 0, isProgressVisible: false, filePath: ''});
             console.warn(err);
             return false
         };
