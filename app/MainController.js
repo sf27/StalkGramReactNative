@@ -6,6 +6,7 @@ import RNFS from "react-native-fs";
 import cheerio from "cheerio";
 import {Clipboard} from "react-native";
 import ToastAndroid from "./native_modules/ToastAndroid";
+import I18n from "react-native-i18n";
 
 export class MainController {
     constructor(view) {
@@ -62,7 +63,7 @@ export class MainController {
         let successFn = result => {
             this.mainView.setComponentState({progress: 0, isProgressVisible: false});
             this.mainView.setComponentState({filePath});
-            ToastAndroid.show('Download file correctly', ToastAndroid.SHORT);
+            ToastAndroid.show(I18n.t('successDownload'), ToastAndroid.SHORT);
             return true
         };
 

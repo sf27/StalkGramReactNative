@@ -11,13 +11,17 @@ export default loadTranslations = () => {
             toolTip: 'Instagram Share URL',
             title: 'Share URL',
             btnSetAsTitle: 'Set as',
-            btnShareTitle: 'Share'
+            btnShareTitle: 'Share',
+            errorInvalidUrl: 'Please, paste a valid Instagram URL.',
+            successDownload: 'File download successfully.'
         },
         es: {
             toolTip: 'Instagram URL Compartida',
             title: 'URL Compartida',
             btnSetAsTitle: 'Establecer como',
-            btnShareTitle: 'Compartir'
+            btnShareTitle: 'Compartir',
+            errorInvalidUrl: 'Por favor, pegue una url valida de Instagram.',
+            successDownload: 'Archivo descargado correctamente.'
         }
     };
 };

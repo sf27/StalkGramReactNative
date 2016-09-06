@@ -5,6 +5,7 @@ import {Clipboard} from "react-native";
 import FileUtils from "./native_modules/FileUtils";
 import {MainController} from "./MainController";
 import ToastAndroid from "./native_modules/ToastAndroid";
+import I18n from "react-native-i18n";
 
 export class MainView {
     constructor(component) {
@@ -31,7 +32,7 @@ export class MainView {
         let success = url => {
             if (url.toString().indexOf("https://www.instagram.com/") === -1) {
                 this.setComponentState({url: '', filePath: '', isImage: true});
-                ToastAndroid.show('Please paste a valid Instagram URL', ToastAndroid.SHORT);
+                ToastAndroid.show(I18n.t('errorInvalidUrl'), ToastAndroid.SHORT);
                 return;
             }
             this.setComponentState({url: url});
