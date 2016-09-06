@@ -17,21 +17,18 @@ export class MainController {
         /*
          Function used to get the url from the html response
          */
-        const INDEX_IMAGE = 10;
-        const INDEX_VIDEO = 23;
         let $ = cheerio.load(responseText);
-        let metaList = $('meta');
-        let metaVideoUrl = metaList[INDEX_VIDEO];
-        if (metaVideoUrl) {
-            let videoUrl = metaVideoUrl.attribs.content;
-            if (videoUrl.toString().endsWith(".mp4")) {
-                this.mainView.setComponentState({isImage: false});
-                return videoUrl
-            }
+        let videoUrl = $('meta[property="og:video"]').attr('content');
+        let imageUrl = $('meta[property="og:image"]').attr('content');
+        if (videoUrl) {
+            this.mainView.setComponentState({isImage: false});
+            return videoUrl;
+        } else if (imageUrl) {
+            this.mainView.setComponentState({isImage: true});
+            return imageUrl;
+        } else {
+            return null;
         }
-        let imageUrl = metaList[INDEX_IMAGE].attribs.content;
-        this.mainView.setComponentState({isImage: true});
-        return imageUrl;
     }
 
     generateFilePath() {
@@ -47,11 +44,17 @@ export class MainController {
 
     downloadMedia(responseText) {
         let mediaUrl = this.getParseUrl(responseText);
-        let filePath = this.generateFilePath();
+        if (!mediaUrl) {
+            ToastAndroid.show(I18n.t('errorDownload'), ToastAndroid.SHORT);
+            return;
+        }
 
+        let filePath = this.generateFilePath();
         var uploadProgress = (response) => {
             var progress = (response.bytesWritten / response.contentLength);
-            this.mainView.setComponentState({progress: progress, isProgressVisible: true});
+            this.mainView.setComponentState({
+                progress: progress, isProgressVisible: true
+            });
         };
 
         let config = {
@@ -63,13 +66,13 @@ export class MainController {
         let successFn = result => {
             this.mainView.setComponentState({progress: 0, isProgressVisible: false, filePath});
             ToastAndroid.show(I18n.t('successDownload'), ToastAndroid.SHORT);
-            return true
+            return true;
         };
 
         let errorFn = err => {
             this.mainView.setComponentState({progress: 0, isProgressVisible: false, filePath: ''});
             console.warn(err);
-            return false
+            return false;
         };
 
         RNFS.downloadFile(config).promise.then(successFn).catch(errorFn);

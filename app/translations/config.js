@@ -13,7 +13,8 @@ export default loadTranslations = () => {
             btnSetAsTitle: 'Set as',
             btnShareTitle: 'Share',
             errorInvalidUrl: 'Please, paste a valid Instagram URL.',
-            successDownload: 'File download successfully.'
+            successDownload: 'File download successfully.',
+            errorDownload: 'It is not possible to download the file.'
         },
         es: {
             toolTip: 'Instagram URL Compartida',
@@ -21,7 +22,8 @@ export default loadTranslations = () => {
             btnSetAsTitle: 'Establecer como',
             btnShareTitle: 'Compartir',
             errorInvalidUrl: 'Por favor, pegue una url valida de Instagram.',
-            successDownload: 'Archivo descargado correctamente.'
+            successDownload: 'Archivo descargado correctamente.',
+            errorDownload: 'No es posible descargar el archivo.'
         }
     };
 };

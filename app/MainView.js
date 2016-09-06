@@ -38,7 +38,7 @@ export class MainView {
                 ToastAndroid.show(I18n.t('errorInvalidUrl'), ToastAndroid.SHORT);
                 return;
             }
-            this.setComponentState({url: url});
+            this.setComponentState({url: url, isProgressVisible: true});
             this.mainController.fetchHtml(url);
         };
         Clipboard.getString().then(success);
@@ -55,6 +55,7 @@ export class MainView {
      */
     isImage = () => this.component.state.isImage;
     isProgressVisible = () => this.component.state.isProgressVisible;
+    isProgressIndeterminate = () => this.component.state.isProgressIndeterminate;
     getProgress = () => this.component.state.progress;
     getUrl = () => this.component.state.url;
     getFilePath = () => {
