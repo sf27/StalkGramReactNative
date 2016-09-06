@@ -7,5 +7,5 @@
  * 2. int duration: The duration of the toast. May be ToastAndroid.SHORT or
  *    ToastAndroid.LONG
  */
-import { NativeModules } from 'react-native';
+import { NativeModules } from "react-native";
 module.exports = NativeModules.ToastAndroid;
