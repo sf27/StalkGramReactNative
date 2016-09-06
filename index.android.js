@@ -5,5 +5,8 @@
  */
 import {MainComponent} from "./app/MainComponent";
 import {AppRegistry} from "react-native";
+import loadTranslations from './app/translations/config';
+
+loadTranslations();
 
 AppRegistry.registerComponent('MainComponent', () => MainComponent);

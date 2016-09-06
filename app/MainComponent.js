@@ -12,10 +12,12 @@ import {VideoPlayer} from "./components/VideoPlayer";
 import {MainView} from "./MainView";
 import {Circle} from "react-native-progress";
 import styles from "./assets/styles/main-styles";
+import I18n from "react-native-i18n";
 
 export class MainComponent extends Component {
     constructor(props) {
         super(props);
+
         this.mainController = new MainView(this);
         this.mainController.initialize();
     }
@@ -49,14 +51,14 @@ export class MainComponent extends Component {
                 <Text
                     style={styles.text}
                 >
-                    Instagram Share URL
+                    {I18n.t('toolTip')}
                 </Text>
                 <TextInput
-                    placeholder="Share URL"
+                    placeholder={I18n.t('title')}
                     style={styles.textInput}
                     value={this.mainController.getUrl()}
-                    multiline = {true}
-                    numberOfLines = {2}
+                    multiline={true}
+                    numberOfLines={2}
                     editable={false}
                 />
                 <View
@@ -68,7 +70,7 @@ export class MainComponent extends Component {
                         transitionDuration={200}
                         states={{
                             idle: {
-                                text: 'Set as',
+                                text: I18n.t('btnSetAsTitle'),
                                 onPress: this.onSetAs,
                                 backgroundColor: '#00bcd4',
                             }
@@ -80,7 +82,7 @@ export class MainComponent extends Component {
                         transitionDuration={200}
                         states={{
                             idle: {
-                                text: 'Share',
+                                text: I18n.t('btnShareTitle'),
                                 onPress: this.onShare,
                                 backgroundColor: '#00bcd4',
                             }
