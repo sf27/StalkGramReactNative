@@ -14,7 +14,11 @@ export class MainView {
     }
 
     initialize() {
-        this.component.state = {
+        this.component.state = this._getDefaultStates();
+    }
+
+    _getDefaultStates() {
+        return {
             url: '',
             filePath: '',
             progress: 0,
@@ -28,7 +32,7 @@ export class MainView {
      * On click methods
      */
     onDownloadFile = () => {
-        this.setComponentState({url: ''});
+        this.setComponentState(this._getDefaultStates());
         let success = url => {
             if (url.toString().indexOf("https://www.instagram.com/") === -1) {
                 this.setComponentState({url: '', filePath: '', isImage: true});
