@@ -19,7 +19,7 @@ share it or set as profile picture.
     * Create the local.properties file  
     `vim android/local.properties`
     * And add the following variable.:  
-    `sdk.dir=<DIR>/Android/adt-bundle-linux-x86_64-20130729/sdk`
+    `sdk.dir=<dir>/Android/adt-bundle-linux-<platform>/sdk`
     * Save the changes:  
     `:wq`
 4. Run the server:  
@@ -29,7 +29,7 @@ share it or set as profile picture.
 
 ### Build a release
 1. Run the following command:  
-    `cd android && ./gradlew assembleReleas`
+    `cd android && ./gradlew assembleRelease`
 2. Find the *.apk signed:  
     `StalkGramReactNative/android/app/build/outputs/apk/app-release.apk`
     
