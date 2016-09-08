@@ -13,18 +13,18 @@ share it or set as profile picture.
 ### Run the project  
 1. First, clone de Github project:  
     `git clone https://github.com/sf27/StalkGramReactNative && cd StalkGramReactNative`    
-2. Run the follow command:  
+2. Run the following command:  
     `npm install`   
-3. Run the server:  
-    `react-native start`  
-4. Specify the Android SDK path:
+3. Specify the Android SDK path:
     * Create the local.properties file  
     `vim android/local.properties`
-    * And add two variables:  
+    * And add the following variable.:  
     `sdk.dir=<DIR>/Android/adt-bundle-linux-x86_64-20130729/sdk`
     * Save the changes:  
     `:wq`
-4. Run the app:  
+4. Run the server:  
+    `react-native start` 
+5. Run the app:  
     `react-native run-android`
 
 ### Build a release
